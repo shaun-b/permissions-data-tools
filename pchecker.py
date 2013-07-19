@@ -216,6 +216,72 @@ def test_lg1_telno_classifications():
                 test_telno_classification(key)
 
 def test_all_telno_classifications():
-    """Tests match details for all telno classifications"""
+    """Tests match details for all telno classifications."""
     test_base_telno_classifications()
     test_lg1_telno_classifications()
+
+def show_available_permissions():
+    """Show permissions IDs and their interpretation."""
+    conn = pdatab.connect_permissions_db()
+
+    perms = pdatab.query_permissions_db(conn, "SELECT permissions_id,permissions_xml_stanza FROM permissions")
+
+    pdatab.disconnect_permissions_db(conn)
+
+    for pid,pxml in perms:
+        print "Permission ID=",str(pid)
+        __print_permissions(pxml)
+
+    print 'Total:',len(perms)
+
+def show_service_level_combos_for_permission(permission_id,from_level='%',to_level='%'):
+    """Discover which combinations of service-level have this particular permission."""
+    conn = pdatab.connect_permissions_db()
+
+    print "Service-Level combinations for Permission ID=",str(permission_id)
+
+    permquery =["SELECT permissions_xml_stanza FROM permissions WHERE permissions_id =\'",str(permission_id),"\'"]
+    __print_permissions(pdatab.query_permissions_db(conn, "".join(permquery))[0][0])
+
+    levelquery = ["SELECT orig_level, term_level FROM service_level_permissions WHERE permissions_id = \'",str(permission_id),
+    "\' AND orig_level LIKE \'",str(from_level),"\' AND term_level LIKE \'",str(to_level),"\'"]
+    combos = pdatab.query_permissions_db(conn, "".join(levelquery))
+
+    pdatab.disconnect_permissions_db(conn)
+
+    total = len(combos)
+    if total > 0:
+        for orig,term in combos:
+            print orig,"=>",term
+    else:
+        print 'There are no service-level combinations with permission=',str(permission_id)
+    print 'total:',total
+
+def show_dialled_number_combos_for_permission(permission_id,from_level='%'):
+    """Discover which service-levels can call what dialled number classifications with this permission."""
+    conn = pdatab.connect_permissions_db()
+
+    print "Dialled number combinations for Permission ID=",str(permission_id)
+
+    permquery = ["SELECT permissions_xml_stanza FROM permissions WHERE permissions_id =\'",str(permission_id),"\'"]
+    permres = pdatab.query_permissions_db(conn, "".join(permquery))
+    if len(permres) > 0:
+        __print_permissions(permres[0][0])
+    else:
+        print 'Error: not defined - permission ID=',str(permission_id)
+        return
+
+    classquery = ["SELECT orig_level,dialled_number_classification FROM dialled_number_permissions WHERE permissions_id = \'",str(permission_id),
+    "\' AND orig_level LIKE \'",str(from_level),"\'"]
+    combos = pdatab.query_permissions_db(conn, "".join(classquery))
+
+    pdatab.disconnect_permissions_db(conn)
+
+    total = len(combos)
+    if total > 0:
+        for orig,numclass in combos:
+            print orig,"=>",numclass
+    else:
+        print 'There are no dialled number combinations with permission=',str(permission_id)
+    print 'total:',total
+
