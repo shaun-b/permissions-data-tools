@@ -17,7 +17,8 @@ __base_telnos = {
         'rescue':('1414','1415'),
         'emergency':('112','117','118','999','911'),
         'ok-service':('140','143','144','145','147'),
-        'nok-service':('012',)
+        'nok-service':('012',),
+        'internationals':('+919902785000','+914923242436')
         }
 
 __lg1_telnos ={
@@ -25,7 +26,7 @@ __lg1_telnos ={
         'austria':('+430123','+4301234','+43012345','+430123456','+4301234567','+43012345678','+430123456789','+4301234567890','+43012345678901','+430123456789012'),
         'belgium':('+320123456','+3201234567','+32012345678'),
         'bulgaria':('+3590123','+35901234','+359012345','+3590123456','+35901234567','+359012345678','+3590123456789','+35901234567890','+359012345678901'),
-        'canada':('+10800000000','+19059999999'),
+        'canada':('+10800000000','+19059999999','+11290111111','+11390111111','+11860000000','+12041111111','+12261111111','+10900000000','+11290000000','+11390000000','+11860000000','+12260000000','+12490000000','+12500000000','+12890000000','+13060000000','+13430000000','+14030000000','+14160000000','+14180000000','+14380000000','+14500000000','+15060000000','+15140000000','+15190000000','+15790000000','+15810000000','+15870000000','+16000000000','+16040000000','+16130000000','+16470000000','+17050000000','+17090000000','+17780000000','+17800000000','+18070000000','+18190000000','+18670000000','+19020000000'),
         'croatia':('+385100000','+385999999999'),
         'cyprus':('+35701234','+357012345','+3570123456','+35701234567'),
         'czech-rep':('+42001234','+420012345','+4200123456','+42001234567','+420012345678','+4200123456789','+42001234567890','+420012345678901'),
@@ -59,6 +60,31 @@ __lg1_telnos ={
         'usa':('+10123456789','+14089347274'),
         'uk':('+440123456','+4401234567','+44012345678','+440123456789','+4401234567890','+44012345678901','+440123456789012')
         }
+
+__non_world1 = {
+        'anguila':('+12641111111',),
+        'antigua-barbuda':('+12681111111',),
+        'bahamas':('+12421111111',),
+        'barbados':('+12461111111',),
+        'bermuda':('+14411111111',),
+        'british-virgin-isles':('+12841111111',),
+        'carribean':('+18091111111','+18291111111','+18491111111'),
+        'cayman-island':('+13451111111',),
+        'domenica':('+17671111111',),
+        'grenada':('+14731111111',),
+        'guam':('+16711111111',),
+        'jamaica':('+18761111111',),
+        'mariana-islands':('+16701111111',),
+        'monserrat':('+16641111111',),
+        'netherlands-antilles':('+17211111111',),
+        'puerto-rico':('+17871111111','+19391111111'),
+        'st-kitts-and-nevis':('+18691111111',),
+        'st-lucia':('+17581111111',),
+        'st-vincent-and-grenadines':('+17841111111',),
+        'trinidad-and-tobago':('+18681111111',),
+        'turks-and-caicos-islands':('+16491111111',),
+        'virgin-island':('+13401111111',)
+    }
 
 __display_separator = "================================================="
         
@@ -183,10 +209,16 @@ def show_lg1_telno_classifications():
         for key in __lg1_telnos.keys():
                 print key
 
+def show_nonworld1_telno_classifications():
+        """Displays non-world1 telephone number classifications that masquerade as LG1s."""
+        for key in __non_world1.keys():
+                print key
+
 def show_all_telno_classifications():
         """Display all telephone number classifications."""
         show_base_telno_classifications()
         show_lg1_telno_classifications()
+        show_nonworld1_telno_classifications()
 
 def test_telno_classification(classification):
         """
@@ -201,6 +233,8 @@ def test_telno_classification(classification):
                 __match_telnos(__base_telnos[classification])
         elif classification in __lg1_telnos:
                 __match_telnos(__lg1_telnos[classification])
+        elif classification in __non_world1:
+                __match_telnos(__non_world1[classification])
         else:
                 print "ERROR: '",classification,"' classification unknown"
         print
@@ -213,6 +247,11 @@ def test_base_telno_classifications():
 def test_lg1_telno_classifications():
         """Tests match details for LG1 classifications."""
         for key in __lg1_telnos.keys():
+                test_telno_classification(key)
+
+def test_nonworld1_telno_classifications():
+        """Tests match details for non-World1 classifications."""
+        for key in __non_world1.keys():
                 test_telno_classification(key)
 
 def test_all_telno_classifications():
