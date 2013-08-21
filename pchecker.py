@@ -25,12 +25,14 @@ __lg1_telnos ={
         'andorra':('+376012345','+376012345678'),
         'austria':('+430123','+4301234','+43012345','+430123456','+4301234567','+43012345678','+430123456789','+4301234567890','+43012345678901','+430123456789012'),
         'belgium':('+320123456','+3201234567','+32012345678'),
+        'bt-geoverse':('+88210823288570',),
         'bulgaria':('+3590123','+35901234','+359012345','+3590123456','+35901234567','+359012345678','+3590123456789','+35901234567890','+359012345678901'),
         'canada':('+10800000000','+19059999999','+11290111111','+11390111111','+11860000000','+12041111111','+12261111111','+10900000000','+11290000000','+11390000000','+11860000000','+12260000000','+12490000000','+12500000000','+12890000000','+13060000000','+13430000000','+14030000000','+14160000000','+14180000000','+14380000000','+14500000000','+15060000000','+15140000000','+15190000000','+15790000000','+15810000000','+15870000000','+16000000000','+16040000000','+16130000000','+16470000000','+17050000000','+17090000000','+17780000000','+17800000000','+18070000000','+18190000000','+18670000000','+19020000000'),
         'croatia':('+385100000','+385999999999'),
         'cyprus':('+35701234','+357012345','+3570123456','+35701234567'),
         'czech-rep':('+42001234','+420012345','+4200123456','+42001234567','+420012345678','+4200123456789','+42001234567890','+420012345678901'),
         'denmark':('+4501234567',),
+        'dtag':('+88228823288570',),
         'estonia':('+3720123456',),
         'faroe-islands':('+298012345',),
         'finland':('+35801234','+358012345','+3580123456','+35801234567','+358012345678','+3580123456789','+35801234567890'),
@@ -49,6 +51,7 @@ __lg1_telnos ={
         'malta':('+35601234567',),
         'monaco':('+37701234567','+377012345678'),
         'netherlands':('+3101234567','+31012345678','+310123456789'),
+        'non-geo-telnor':('+883120823288570',),
         'norway':('+4701234567',),
         'poland':('+48012345','+480123456','+4801234567','+48012345678','+480123456789','+4801234567890','+48012345678901'),
         'portugal':('+351012345','+3510123456','+35101234567','+351012345678'),
@@ -56,12 +59,13 @@ __lg1_telnos ={
         'san-marino':('+3780123456789','+37801234567890','+378012345678901'),
         'slovak-rep':('+42101234567','+421012345678','+4210123456789'),
         'slovenia':('+38601234567',),
+        'spain':('+34000000000',),
         'sweden':('+46012345','+460123456','+4601234567','+46012345678','+460123456789','+4601234567890'),
         'usa':('+10123456789','+14089347274'),
         'uk':('+440123456','+4401234567','+44012345678','+440123456789','+4401234567890','+44012345678901','+440123456789012')
         }
 
-__non_world1 = {
+__non_usa = {
         'anguila':('+12641111111',),
         'antigua-barbuda':('+12681111111',),
         'bahamas':('+12421111111',),
@@ -84,6 +88,66 @@ __non_world1 = {
         'trinidad-and-tobago':('+18681111111',),
         'turks-and-caicos-islands':('+16491111111',),
         'virgin-island':('+13401111111',)
+    }
+
+__internationals = {
+        'albania':('+3550000000','+355000000000'),
+        'algeria':('+21300000000','+213000000000'),
+        'armenia':('+37400000000',),
+        'argentina':('+547777777','+54222222222222'),
+        'belarus':('+375000000000',),
+        'belize':('+5017777777',),
+        'benin':('+22900000000',),
+        'bolivia':('+59188888888',),
+        'bosnia-hercegovina':('+3870055555','+38700666666'),
+        'brazil':('+550000000000',),
+        'burkina-faso':('+22600000000',),
+        'chile':('+5688888888','+560000000000'),
+        'columbia':('+57666666','+57222222222222'),
+        'costa-rica':('+50688888888',),
+        'cote-divoire':('+22500000000',),
+        'cuba':('+5355555','+5311111111111'),
+        'ecuador':('+593999999999',),
+        'egypt':('+201111111','+2011111111','+20111111111'),
+        'el-salvador':('+50388888888',),
+        'falkland-islands':('+500555555',),
+        'former-netherlands-antilles':('+599666666','+5997777777','+59997777777'),
+        'french-antilles':('+5900000000000',),
+        'french-guiana':('+5940000000000',),
+        'gambia':('+2200000000',),
+        'guatemala':('+5027777777','+50288888888'),
+        'guinea':('+224000000',),
+        'guyana':('+592666666',),
+        'haiti':('+5097777777',),
+        'honduras':('+5047777777',),
+        'inmarsat-0':('+870000000000','+870100000000','+870300000000','+870390000000','+870500000000','+870600000000','+870600000000','+870700000000','+870800000000'),
+        'kosovo':('+37740980000','+377409800000','+37744000000','+377440000000','+37745000000','+377450000000','+38643200000','+38643355555','+38643466666','+38643777777','+38649888888'),
+        'libya':('+2180000000','+21800000000','+218000000000','+2180000000000'),
+        'macedonia':('+389155555','+389227777777'),
+        'mali':('+22300000000',),
+        'martinique':('+5960000000000',),
+        'mauritania':('+2220000000',),
+        'mauritius':('+2300000000',),
+        'mexico':('+5288888888','+520000000000'),
+        'moldova':('+37300000000',),
+        'montenegro':('+3827777777','+38288888888','+382999999999','+3820000000000'),
+        'morocco':('+21200000000',),
+        'nicaragua':('+50588888888',),
+        'niger':('+227000000',),
+        'panama':('+5077777777',),
+        'paraguay':('+59555555','+59511111111111'),
+        'peru':('+5188888888','+51999999999'),
+        'sea-coverage':('+3548910399','+35489103990','+354891039900','+393358952','+3933589520','+39335895200','+393358952000','+3933589520000'),
+        'senegal':('+2210000000',),
+        'serbia-kosovo':('+3817777777','+38188888888','+381999999999','+3810000000000'),
+        'south-sudan':('+20111111111','+211000000000'),
+        'st-pierre-and-miquelon':('+508666666',),
+        'suriname':('+597666666',),
+        'togo':('+2280000000',),
+        'tunisia':('+21600000000',),
+        'ukraine':('+3807777777','+38088888888','+380999999999','+3800000000000','+38011111111111'),
+        'uriguay':('+59855555','+5980000000000'),
+        'venezuela':('+580000000000',)
     }
 
 __display_separator = "================================================="
@@ -209,16 +273,22 @@ def show_lg1_telno_classifications():
         for key in __lg1_telnos.keys():
                 print key
 
-def show_nonworld1_telno_classifications():
+def show_nonusa_telno_classifications():
         """Displays non-world1 telephone number classifications that masquerade as LG1s."""
-        for key in __non_world1.keys():
+        for key in __non_usa.keys():
+                print key
+
+def show_international_telno_classifications():
+        """Displays international telephone number classifications."""
+        for key in __internationals.keys():
                 print key
 
 def show_all_telno_classifications():
         """Display all telephone number classifications."""
         show_base_telno_classifications()
         show_lg1_telno_classifications()
-        show_nonworld1_telno_classifications()
+        show_nonusa_telno_classifications()
+        show_international_telno_classifications()
 
 def test_telno_classification(classification):
         """
@@ -233,8 +303,10 @@ def test_telno_classification(classification):
                 __match_telnos(__base_telnos[classification])
         elif classification in __lg1_telnos:
                 __match_telnos(__lg1_telnos[classification])
-        elif classification in __non_world1:
-                __match_telnos(__non_world1[classification])
+        elif classification in __non_usa:
+                __match_telnos(__non_usa[classification])
+        elif classification in __internationals:
+                __match_telnos(__internationals[classification])
         else:
                 print "ERROR: '",classification,"' classification unknown"
         print
@@ -249,15 +321,22 @@ def test_lg1_telno_classifications():
         for key in __lg1_telnos.keys():
                 test_telno_classification(key)
 
-def test_nonworld1_telno_classifications():
-        """Tests match details for non-World1 classifications."""
-        for key in __non_world1.keys():
+def test_nonusa_telno_classifications():
+        """Tests match details for non-USA classifications."""
+        for key in __non_usa.keys():
+                test_telno_classification(key)
+
+def test_international_telno_classifications():
+        """Tests match details for international classifications."""
+        for key in __internationals.keys():
                 test_telno_classification(key)
 
 def test_all_telno_classifications():
     """Tests match details for all telno classifications."""
     test_base_telno_classifications()
     test_lg1_telno_classifications()
+    test_nonusa_telno_classifications()
+    test_international_telno_classifications()
 
 def show_available_permissions():
     """Show permissions IDs and their interpretation."""
@@ -324,3 +403,5 @@ def show_dialled_number_combos_for_permission(permission_id,from_level='%'):
         print 'There are no dialled number combinations with permission=',str(permission_id)
     print 'total:',total
 
+if __name__ == '__main__':
+    test_all_telno_classifications()
