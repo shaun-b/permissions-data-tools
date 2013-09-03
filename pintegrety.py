@@ -4,6 +4,7 @@ import collections
 import colorama
 
 servicelevels = None
+servicegroupids = None
 permissionsids = None
 numberclassids = None
 
@@ -62,79 +63,84 @@ def setup():
 	number classifications are read from number_class_id in dialled_number_classifications
 
 	"""
-	print 'Loading reference values'
+	print 'Loading reference values and checking omissions and duplications'
 
-	conn = pdatab.connect_permissions_db()
+	conn = pdatab.connect_permissions_db(ip="localhost", port=3306, db="pcomp_srv")
 
-	levels = pdatab.query_permissions_db(conn, 'SELECT service_level FROM ucid_service_levels')
+	levels = pdatab.query_permissions_db(conn, 'SELECT service_level,service_group_id FROM ucid_service_level_groups')
+	groups = pdatab.query_permissions_db(conn, 'SELECT service_group_id FROM service_level_groups')
 	permids = pdatab.query_permissions_db(conn, 'SELECT permissions_id FROM permissions')
 	numids = pdatab.query_permissions_db(conn, 'SELECT number_class_id FROM dialled_number_classifications')
 
 	pdatab.disconnect_permissions_db(conn)
 
 	ok = 0
-	global servicelevels
-	levels = [l[0] for l in levels]
-	if show_duplicates(levels,'ucid_service_levels'):
+	groups = [g[0] for g in groups]
+	if show_omissions([l[1] for l in levels], groups, 'ucid_service_level_groups'):
 		ok = ok + 1
+	global servicegroupids
+	servicegroupids = ImmutableSet(groups)
+	levels = [l[0] for l in levels]
+	if show_duplicates(levels,'ucid_service_levels_groups'):
+		ok = ok + 1
+	global servicelevels
 	servicelevels = ImmutableSet(levels)
-	global permissionsids
 	pids = [p[0] for p in permids]
 	if show_duplicates(pids,'permissions'):
 		ok = ok + 1
+	global permissionsids
 	permissionsids = ImmutableSet(pids)
-	# numbreclassids will contain duplicates
+	# numberclassids will contain duplicates
 	global numberclassids
 	numberclassids = ImmutableSet(n[0] for n in numids)
 
-	if ok == 2:
+	if ok == 3:
 		print_green('ok')
 
 
-def check_undefineds_in_dialled_number_permissions():
+def check_undefineds_in_service_group_dialled_number_permissions():
 	"""
-	Checks for undefined values in dialled_number_permissions table.
+	Checks for undefined values in service_group_dialled_number_permissions table.
 
-	orig_level only has service-levels that are defined as service_level in ucid_service_levels
+	orig_group only has service_group_ids that are defined in service_level_groups
 	dialled_number_classification only has number classifications defined as number_class_id in dialled_number_classifications
 	permissions_id only has ids defined as permissions_id in permissions
 
 	Prints 'ok' if everything is defined; otherwise prints undefined values.
 
 	"""
-	print 'Checking dialled_number_permissions'
+	print 'Checking undefineds in service_group_dialled_number_permissions'
 
 	conn = pdatab.connect_permissions_db()
-	res = pdatab.query_permissions_db(conn, 'SELECT orig_level,dialled_number_classification,permissions_id FROM dialled_number_permissions')
+	res = pdatab.query_permissions_db(conn, 'SELECT orig_group,dialled_number_classification,permissions_id FROM service_group_dialled_number_permissions')
 	pdatab.disconnect_permissions_db(conn)
 
 	levels = Set(l[0] for l in res)
 	numids = Set(n[1] for n in res)
 	permids = Set(p[2] for p in res)
 
-	ok = 1
-	delta = levels.difference(servicelevels)
+	ok = True
+	delta = levels.difference(servicegroupids)
 	if len(delta) > 0:
-		ok = 0
-		print 'orig_level contains the following undefined service-levels:'
+		ok = False
+		print 'orig_group contains the following undefined service-levels:'
 		for d in delta:
 			print_red('\t',str(d))
 	delta = numids.difference(numberclassids)
 	if len(delta) > 0:
-		ok = 0
+		ok = False
 		print 'dialled_number_classification contains the following undefined number classifications:'
 		for d in delta:
 			print_red('\t',str(d))
 	delta = permids.difference(permissionsids)
 	if len(delta) > 0:
-		ok = 0
-		print 'permissions_id contains the following undefined permissions ids:'
+		ok = False
+		print 'permissions contains the following undefined permissions ids:'
 		for d in delta:
 			print_red('\t',str(d))
-	if ok:
-		print_green('ok')
+	return ok
 
-def check_undefineds_in_service_level_permissions():
+def check_undefineds_in_service_group_permissions():
 	"""
 	Checks for undefined values in serviec_level_permissions table.
 
@@ -145,27 +151,27 @@ def check_undefineds_in_service_level_permissions():
 	Prints 'ok' if everything is defined; otherwise prints undefined values.
 
 	"""
-	print 'Checking service_level_permissions'
+	print 'Checking undefineds in service_group_permissions'
 
 	conn = pdatab.connect_permissions_db()
-	res = pdatab.query_permissions_db(conn, 'SELECT orig_level,term_level,permissions_id FROM service_level_permissions')
+	res = pdatab.query_permissions_db(conn, 'SELECT orig_group,term_group,permissions_id FROM service_group_permissions')
 	pdatab.disconnect_permissions_db(conn)
 
-	olevels = Set(l[0] for l in res)
-	tlevels = Set(n[1] for n in res)
+	ogroups = Set(l[0] for l in res)
+	tgroups = Set(n[1] for n in res)
 	permids = Set(p[2] for p in res)
 
 	ok = 1
-	delta = olevels.difference(servicelevels)
+	delta = ogroups.difference(servicegroupids)
 	if len(delta) > 0:
 		ok = 0
-		print 'orig_level contains the following undefined service-levels:'
+		print 'orig_group contains the following undefined service_group_ids:'
 		for d in delta:
 			print_red('\t',str(d))
-	delta = tlevels.difference(servicelevels)
+	delta = tgroups.difference(servicegroupids)
 	if len(delta) > 0:
 		ok = 0
-		print 'term_level contains the following undefined service-levels:'
+		print 'term_group contains the following undefined service_group_ids:'
 		for d in delta:
 			print_red('\t',str(d))
 	delta = permids.difference(permissionsids)
@@ -174,10 +180,9 @@ def check_undefineds_in_service_level_permissions():
 		print 'permissions_id contains the following undefined permissions ids:'
 		for d in delta:
 			print_red('\t',str(d))
-	if ok:
-		print_green('ok')
+	return ok
 
-def check_combinations_in_service_level_permissions():
+def check_combinations_in_service_group_permissions():
 	"""
 	Checks combinations of service-levels.
 
@@ -186,23 +191,32 @@ def check_combinations_in_service_level_permissions():
 	Prints 'ok' if all combinations are defined; otherwise prints omission and duplication values.
 
 	"""
-	print "Checking service_level_permissions"
+	print "Checking group combinations in service_group_permissions"
 
 	conn = pdatab.connect_permissions_db()
 
 	ok = 0
-	for level in servicelevels:
-		query = ['SELECT term_level FROM service_level_permissions WHERE orig_level = \'',str(level),'\'']
-		res = pdatab.query_permissions_db(conn, ''.join(query))
-		l = [r[0] for r in res]
-		if show_duplicates(l,level) and show_omissions(l,servicelevels,level):
+
+	#checking for missing origination groups ids
+	oids = pdatab.query_permissions_db(conn, "SELECT DISTINCT orig_group FROM service_group_permissions")
+	oids = [o[0] for o in oids]
+	if show_omissions(oids, servicegroupids, 'orig_group'):
+		ok = ok + 1
+	
+	#checking each origination group id has a full complement of termination group ids
+	for groupid in oids:
+		res = pdatab.query_permissions_db(conn, "SELECT term_group FROM service_group_permissions WHERE orig_group = '%d'" % (groupid))
+		g = [r[0] for r in res]
+		if show_omissions(g,servicegroupids,'term_group') and show_duplicates(g,"term_group for %d" % groupid):
 			ok = ok + 1
 
 	pdatab.disconnect_permissions_db(conn)
-	if ok == len(servicelevels):
-		print_green('ok')
+	if ok == (len(servicegroupids) + 1):
+		return True
+	else:
+		return False
 
-def check_combinations_in_dialled_number_permissions():
+def check_combinations_in_service_group_dialled_number_permissions():
 	"""
 	Checks combinations of service-level with dialled number classifications.
 
@@ -211,33 +225,47 @@ def check_combinations_in_dialled_number_permissions():
 	Prints 'ok' if all combinations are defined; otherwise prints omission and duplication values.
 
 	"""
-	print "Checking dialled_number_permissions"
+	print "Checking group to number classification combinations in service_group_dialled_number_permissions"
 
 	conn = pdatab.connect_permissions_db()
 
 	ok = 0
-	for level in servicelevels:
-		query = ['SELECT dialled_number_classification FROM dialled_number_permissions WHERE orig_level = \'',str(level),'\'']
-		res = pdatab.query_permissions_db(conn, ''.join(query))
+
+	#checking for missing origination groups ids
+	oids = pdatab.query_permissions_db(conn, "SELECT DISTINCT orig_group FROM service_group_dialled_number_permissions")
+	oids = [o[0] for o in oids]
+	if show_omissions(oids, servicegroupids, 'orig_group'):
+		ok = ok + 1
+
+	#checking each origination group id has a full complement of telephone number classifications
+	for oid in oids:
+		res = pdatab.query_permissions_db(conn, \
+			"SELECT dialled_number_classification FROM service_group_dialled_number_permissions WHERE orig_group = '%d'" % oid)
 		l = [r[0] for r in res]
-		if show_duplicates(l,level) and show_omissions(l,numberclassids,level):
+		if show_duplicates(l,oid) and show_omissions(l,numberclassids,oid):
 			ok = ok + 1
 
 	pdatab.disconnect_permissions_db(conn)
 
-	if ok == len(servicelevels):
-		print_green('ok')
+	if ok == (len(servicegroupids) + 1):
+		return True
+	else:
+		return False
 
 
 def check_undefineds():
 	"""Checks all undefined values."""
-	check_undefineds_in_dialled_number_permissions()
-	check_undefineds_in_service_level_permissions()
+	if check_undefineds_in_service_group_dialled_number_permissions() and check_undefineds_in_service_group_permissions():
+		print_green('ok')
+	else:
+		print_red('nok')
 
 def check_combinations():
 	"""Checks all combinations for correctness."""
-	check_combinations_in_service_level_permissions()
-	check_combinations_in_dialled_number_permissions()
+	if check_combinations_in_service_group_permissions() and check_combinations_in_service_group_dialled_number_permissions():
+		print_green('ok')
+	else:
+		print_red('nok')
 
 if __name__ == '__main__':
 	colorama.init(autoreset=True)

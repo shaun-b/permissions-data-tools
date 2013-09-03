@@ -1,6 +1,6 @@
 import MySQLdb
 
-def connect_permissions_db(ip="localhost", port=3306, db="pcomp_srv_sb", u="root", p="FUgi&2013"):
+def connect_permissions_db(ip="localhost", port=3306, db="pcomp_srv", u="root", p="FUgi&2013"):
 	"""
 	Connect to the Permissions Service Database.
 
