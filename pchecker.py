@@ -314,6 +314,25 @@ def show_dialled_number_combo(from_level, telno):
                
     pdatab.disconnect_permissions_db(conn)
 
+def show_dialled_number_classification_combo(from_level, classification):
+    """
+    """
+    conn = pdatab.connect_permissions_db()
+
+    levels = pdatab.query_permissions_db(conn, \
+        "SELECT service_level,service_group_id FROM ucid_service_level_groups WHERE service_level LIKE '%s' ORDER BY service_level" % from_level)
+
+    for level in levels:
+        permid = pdatab.query_permissions_db(conn, \
+            "SELECT permissions_id FROM service_group_dialled_number_permissions WHERE orig_group = '%d' \
+            AND dialled_number_classification = '%d'" % (level[1], classification))
+        permission  = pdatab.query_permissions_db(conn, \
+            "SELECT permissions_xml_stanza FROM permissions WHERE permissions_id = '%s'" % (permid[0]))
+        print_white(level[0])
+        __print_permissions(permission[0][0])
+
+    pdatab.disconnect_permissions_db(conn)
+
 def show_base_telno_classifications():
         """Displays basic telephone number classifications."""
         for key in __base_telnos.keys():
