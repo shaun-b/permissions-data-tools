@@ -160,7 +160,7 @@ __display_separator = "================================================="
 
 def print_green(*text):
     colorama.init(autoreset=True)
-    print(colorama.Fore.GREEN + colorama.Style.BRIGHT + text)
+    print(colorama.Fore.GREEN + colorama.Style.BRIGHT + ''.join(text))
     colorama.deinit()
 
 def print_red(*text):
@@ -530,6 +530,43 @@ def show_dialled_number_combos_for_permission(permission_id,from_level='%',verbo
     else:
         print 'There are no dialled number combinations with permission = %d' % permission_id
     print 'total:',total
+
+def prettyprint_registration_permission(permission):
+    elems = permission.split(">")
+    for e in elems:
+        if(len(e) > 0):
+            print_yellow("\t\t" + e + '>')
+
+
+def show_registration_permission(service_level):
+    conn = pdatab.connect_permissions_db()
+
+    levelres = pdatab.query_permissions_db(conn, \
+        "SELECT readable_description,service_group_id FROM ucid_service_level_groups WHERE service_level LIKE '%s'" % service_level)
+    if len(levelres) > 0:
+        for l in levelres:
+            print_green(l[0])
+            groupres = pdatab.query_permissions_db(conn, \
+                "SELECT service_group_name FROM service_level_groups WHERE service_group_id = '%d'" % l[1])
+            if len(groupres) > 0:
+                for g in groupres:
+                    print_white("%s : %s(%d)" % (service_level,g[0],l[1]))
+                    regres = pdatab.query_permissions_db(conn, \
+                        "SELECT device_type_id,registrations_id FROM service_group_registrations WHERE service_group_id = '%d'" % l[1])
+                    for r in regres:
+                        devtype = pdatab.query_permissions_db(conn, \
+                            "SELECT device_type_name,device_type_description FROM device_types WHERE device_type_id = '%d'" % r[0])
+                        perm = pdatab.query_permissions_db(conn, \
+                            "SELECT registrations_xml_stanza from registrations WHERE registrations_id = '%d'" % r[1])
+                        print_white("\t%s(%d) : %s" % (devtype[0][0],r[0],devtype[0][1]))
+                        print_white("\tpermission(%d)" % r[1])
+                        prettyprint_registration_permission(perm[0][0])
+            else:
+                print_red('service_group_id (%d) is not defined' % l[1])
+    else:
+        print_red('%s is not defined' % service_level)
+
+    pdatab.disconnect_permissions_db(conn)
 
 
 if __name__ == '__main__':
