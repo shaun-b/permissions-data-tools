@@ -422,6 +422,20 @@ def show_available_permissions():
 
     print 'Total:',len(perms)
 
+def print_permission(id):
+    """Print permissions stanza associated with permission_id."""
+    conn = pdatab.connect_permissions_db()
+
+    perms = pdatab.query_permissions_db(conn, "SELECT permissions_id,permissions_xml_stanza FROM permissions WHERE permissions_id = '%d'" % (id))
+
+    pdatab.disconnect_permissions_db(conn)
+
+    for pxml in perms:
+        print_white("Permission ID = %d" % id)
+        print_yellow(pxml[1])
+
+    print 'Total:',len(perms)
+
 def show_dialled_number_classifications():
     """Show number_class_ids and their interpretations"""
     conn = pdatab.connect_permissions_db()
