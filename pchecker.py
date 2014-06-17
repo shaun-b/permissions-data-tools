@@ -194,6 +194,7 @@ def __print_permissions(perms):
                 for allowed in child:
                         count = count + 1
                         print_yellow("\t",child.tag,":", allowed.attrib["type"],"(",allowed.attrib["route"],")")
+                        print_green(perms)
         if count == 0:
                 print_yellow("\t","not allowed")
                         
@@ -314,8 +315,14 @@ def show_dialled_number_combo(from_level, telno):
                
     pdatab.disconnect_permissions_db(conn)
 
-def show_dialled_number_classification_combo(from_level, classification):
+def show_dialled_number_classification_combo(from_level, classification, verbose=False):
     """
+    Display permission for telno classification.
+
+    from_level - originating service level (or '%' wildcard)
+    classification - telno classification (e.g. 31 for LG1, 5 for mobile, 1 for Fixnet, etc)
+    verbose - when true, full permission stanza will be displayed
+
     """
     conn = pdatab.connect_permissions_db()
 
@@ -330,6 +337,8 @@ def show_dialled_number_classification_combo(from_level, classification):
             "SELECT permissions_xml_stanza FROM permissions WHERE permissions_id = '%s'" % (permid[0]))
         print_white(level[0])
         __print_permissions(permission[0][0])
+        if verbose:
+            print_green(permission[0][0])
 
     pdatab.disconnect_permissions_db(conn)
 
