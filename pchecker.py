@@ -194,7 +194,7 @@ def __print_permissions(perms):
                 for allowed in child:
                         count = count + 1
                         print_yellow("\t",child.tag,":", allowed.attrib["type"],"(",allowed.attrib["route"],")")
-                        print_green(perms)
+        print_green(perms)
         if count == 0:
                 print_yellow("\t","not allowed")
                         
@@ -594,3 +594,4 @@ def show_registration_permission(service_level):
 
 if __name__ == '__main__':
     test_all_telno_classifications()
+
