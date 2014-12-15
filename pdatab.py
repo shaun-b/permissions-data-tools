@@ -12,7 +12,8 @@ def connect_permissions_db(ip="localhost", port=3306, db="pcomp_srv", u="root", 
 	return -- database connection
 
 	"""
-	conn = MySQLdb.connect(host=ip, port=port, user=u, passwd=p, db=db)
+	## conn = MySQLdb.connect(host=ip, port=port, user=u, passwd=p, db=db)
+	conn = MySQLdb.connect(host=ip, port=port, user=u, db=db)
 	return conn
 
 def disconnect_permissions_db(conn):
